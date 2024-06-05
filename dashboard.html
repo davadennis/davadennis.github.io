@@ -5,27 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <script src="/md5.js"></script>
-    <script>
-        function doLogin() {
-            const chapId = "YOUR_CHAP_ID"; // Replace with actual chap-id
-            const chapChallenge = "YOUR_CHAP_CHALLENGE"; // Replace with actual chap-challenge
-            const linkLoginOnly = "YOUR_LINK_LOGIN_ONLY"; // Replace with actual link-login-only
-
-            document.sendin.username.value = document.login.username.value;
-            document.sendin.password.value = hexMD5(chapId + document.login.password.value + chapChallenge);
-            document.sendin.action = linkLoginOnly;
-            document.sendin.submit();
-            return false;
-        }
-    </script>
 </head>
 <body>
     <div class="container">
         <h2>Dashboard</h2>
         <p id="welcome-message"></p>
 
-        <form name="login" onSubmit="return doLogin()">
+        <!-- Form Login Hotspot -->
+        <form name="login" action="$(link-login-only)" method="post">
             <label>
                 Username:
                 <input type="text" name="username" placeholder="Username" required>
@@ -38,47 +25,6 @@
             <br>
             <button type="submit">Connect</button>
         </form>
-
-        <form name="sendin" method="post" style="display:none">
-            <input type="hidden" name="username">
-            <input type="hidden" name="password">
-            <input type="hidden" name="dst" value="">
-            <input type="hidden" name="popup" value="true">
-        </form>
     </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZ9Dbbsu3oDt4g14ceXYuETPZzyIwb910",
-            authDomain: "bank-sampah-19cfe.firebaseapp.com",
-            projectId: "bank-sampah-19cfe",
-            storageBucket: "bank-sampah-19cfe.appspot.com",
-            messagingSenderId: "846385776645",
-            appId: "1:846385776645:web:d325c150ed81d8264d746c",
-            measurementId: "G-XBJ1S1F04B"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    document.getElementById('welcome-message').innerText = `Halo, ${userData.username}`;
-                }
-            } else {
-                window.location.href = 'index.html'; // Redirect to login page if not logged in
-            }
-        });
-    </script>
 </body>
 </html>
