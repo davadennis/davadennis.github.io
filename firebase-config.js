@@ -5,17 +5,18 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebas
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBTUUvgdp2dFhZ2OfIFTxPCE4i1H0dzLG0",
-    authDomain: "dade-nett.firebaseapp.com",
-    projectId: "dade-nett",
-    storageBucket: "dade-nett.appspot.com",
-    messagingSenderId: "555456431199",
-    appId: "1:555456431199:web:63f714c5d1febfd1c747ea"
+    apiKey: "AIzaSyAZ9Dbbsu3oDt4g14ceXYuETPZzyIwb910",
+    authDomain: "bank-sampah-19cfe.firebaseapp.com",
+    projectId: "bank-sampah-19cfe",
+    storageBucket: "bank-sampah-19cfe.appspot.com",
+    messagingSenderId: "846385776645",
+    appId: "1:846385776645:web:d325c150ed81d8264d746c",
+    measurementId: "G-XBJ1S1F04B"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 export { auth, db };
