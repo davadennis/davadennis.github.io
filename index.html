@@ -10,22 +10,31 @@
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form id="login-form" onsubmit="handleLogin(event)">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+        <form id="login-form">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <input type="submit" value="Login">
         </form>
 
         <h2>Register</h2>
-        <form id="register-form" onsubmit="handleRegister(event)">
-            <label for="reg-username">Username:</label>
-            <input type="text" id="reg-username" name="username" required>
-            <label for="reg-password">Password:</label>
-            <input type="password" id="reg-password" name="password" required>
+        <form id="register-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
             <input type="submit" value="Register">
         </form>
     </div>
+
+    <script type="module">
+        import { handleLogin, handleRegister } from './auth.js';
+
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+        document.getElementById('register-form').addEventListener('submit', handleRegister);
+    </script>
 </body>
 </html>
