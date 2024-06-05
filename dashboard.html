@@ -5,48 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBTUUvgdp2dFhZ2OfIFTxPCE4i1H0dzLG0",
-            authDomain: "dade-nett.firebaseapp.com",
-            projectId: "dade-nett",
-            storageBucket: "dade-nett.appspot.com",
-            messagingSenderId: "555456431199",
-            appId: "1:555456431199:web:63f714c5d1febfd1c747ea"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore();
-
-        async function loadUserData(uid) {
-            const userDoc = await getDoc(doc(db, "users", uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                document.getElementById('username-display').textContent = userData.username;
-            } else {
-                console.error("No such document!");
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const uid = urlParams.get('uid');
-            if (uid) {
-                loadUserData(uid);
-            } else {
-                console.error("No UID found in URL");
-            }
-        });
-    </script>
+    <script type="module" src="dashboard.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Halo, <span id="username-display"></span></h1>
+        <h2>Dashboard</h2>
+        <p id="welcome-message"></p>
     </div>
 </body>
 </html>
