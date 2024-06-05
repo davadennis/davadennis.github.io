@@ -6,44 +6,37 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
 // Function to handle login
 export async function handleLogin(event) {
     event.preventDefault();
-    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, username, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        console.log("Login successful:", user);
-
-        // Redirect to dashboard
-        window.location.href = `dashboard.html?uid=${user.uid}`;
+        window.location.href = 'dashboard.html';
     } catch (error) {
-        console.error("Login error:", error);
-        alert("Username atau password salah.");
+        console.error("Error logging in:", error);
+        alert("Login failed: " + error.message);
     }
 }
 
 // Function to handle registration
 export async function handleRegister(event) {
     event.preventDefault();
-    const username = document.getElementById('reg-username').value;
-    const password = document.getElementById('reg-password').value;
-    const points = 0; // Initial points
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const username = document.getElementById('username').value;
 
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, username, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // Add user data to Firestore
         await setDoc(doc(db, "users", user.uid), {
             username: username,
-            points: points
+            email: email,
+            points: 0
         });
-
-        console.log("Registration successful:", user);
-        // Redirect to login
-        window.location.href = "index.html";
+        window.location.href = 'dashboard.html';
     } catch (error) {
-        console.error("Registration error:", error);
-        alert("Error creating user.");
+        console.error("Error registering:", error);
+        alert("Registration failed: " + error.message);
     }
 }
