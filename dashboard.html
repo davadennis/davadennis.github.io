@@ -29,16 +29,15 @@
     </div>
 
     <script type="module">
+        // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // Your web app's Firebase configuration
         const firebaseConfig = {
-            
             apiKey: "AIzaSyAZ9Dbbsu3oDt4g14ceXYuETPZzyIwb910",
             authDomain: "bank-sampah-19cfe.firebaseapp.com",
-            databaseURL: "https://bank-sampah-19cfe-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "bank-sampah-19cfe",
             storageBucket: "bank-sampah-19cfe.appspot.com",
             messagingSenderId: "846385776645",
@@ -46,8 +45,8 @@
             measurementId: "G-XBJ1S1F04B"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
