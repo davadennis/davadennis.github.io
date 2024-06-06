@@ -12,16 +12,16 @@
         <p id="welcome-message"></p>
         
         <!-- Form Login Hotspot Mikrotik -->
-        <form name="login" action="http://dade.net/login" method="post" onSubmit="return doLogin()">
+        <form name="login" onsubmit="connectToHotspot(); return false;">
             <input type="hidden" name="dst" value="http://dade.net">
             <input type="hidden" name="popup" value="true">
             <label>
                 <img class="ico" src="img/user.svg" alt="#">
-                <input name="username" type="text" placeholder="Username">
+                <input id="username" type="text" placeholder="Username">
             </label>
             <label>
                 <img class="ico" src="img/password.svg" alt="#">
-                <input name="password" type="password" placeholder="Password">
+                <input id="password" type="password" placeholder="Password">
             </label>
             <input type="submit" value="Connect">
         </form>
@@ -65,6 +65,44 @@
         function doLogin() {
             document.login.password.value = md5(document.login.password.value);
             return true;
+        }
+
+        function connectToHotspot() {
+            // Ambil nilai username dan password dari input form
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Buat objek data untuk dikirim
+            var data = {
+                username: username,
+                password: password
+            };
+
+            // Konversi objek data menjadi format JSON
+            var jsonData = JSON.stringify(data);
+
+            // Kirim permintaan HTTP POST ke endpoint MikroTik
+            fetch('http://192.168.77.1/authenticate.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Tanggapan dari server MikroTik
+                console.log(data);
+                // Lakukan penanganan tanggapan sesuai kebutuhan Anda
+            })
+            .catch(error => {
+                console.error('There was an error with the fetch operation:', error);
+            });
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
