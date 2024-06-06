@@ -10,21 +10,62 @@
     <div class="container">
         <h2>Dashboard</h2>
         <p id="welcome-message"></p>
-
-        <!-- Form Login Hotspot -->
-        <form name="login" action="$(link-login-only)" method="post">
+        
+        <!-- Form Login Hotspot Mikrotik -->
+        <form name="login" action="http://dade.net/login" method="post" onSubmit="return doLogin()">
+            <input type="hidden" name="dst" value="http://dade.net">
+            <input type="hidden" name="popup" value="true">
             <label>
-                Username:
-                <input type="text" name="username" placeholder="Username" required>
+                <img class="ico" src="img/user.svg" alt="#">
+                <input name="username" type="text" placeholder="Username">
             </label>
-            <br>
             <label>
-                Password:
-                <input type="password" name="password" placeholder="Password" required>
+                <img class="ico" src="img/password.svg" alt="#">
+                <input name="password" type="password" placeholder="Password">
             </label>
-            <br>
-            <button type="submit">Connect</button>
+            <input type="submit" value="Connect">
         </form>
+        
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "API_KEY_HERE",
+            authDomain: "AUTH_DOMAIN_HERE",
+            projectId: "PROJECT_ID_HERE",
+            storageBucket: "STORAGE_BUCKET_HERE",
+            messagingSenderId: "MESSAGING_SENDER_ID_HERE",
+            appId: "APP_ID_HERE",
+            measurementId: "MEASUREMENT_ID_HERE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    document.getElementById('welcome-message').innerText = `Halo, ${userData.username}`;
+                }
+            } else {
+                window.location.href = 'index.html'; // Redirect to login page if not logged in
+            }
+        });
+
+        function doLogin() {
+            document.login.password.value = md5(document.login.password.value);
+            return true;
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
 </body>
 </html>
