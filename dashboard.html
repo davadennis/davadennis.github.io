@@ -13,8 +13,6 @@
         
         <!-- Form Login Hotspot Mikrotik -->
         <form name="login" onsubmit="connectToHotspot(); return false;">
-            <input type="hidden" name="dst" value="http://dade.net">
-            <input type="hidden" name="popup" value="true">
             <label>
                 <img class="ico" src="img/user.svg" alt="#">
                 <input id="username" type="text" placeholder="Username">
@@ -25,7 +23,6 @@
             </label>
             <input type="submit" value="Connect">
         </form>
-        
     </div>
 
     <script type="module">
@@ -33,6 +30,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -43,6 +41,7 @@
             messagingSenderId: "846385776645",
             appId: "1:846385776645:web:d325c150ed81d8264d746c",
             measurementId: "G-XBJ1S1F04B"
+
         };
 
         // Initialize Firebase
@@ -61,11 +60,6 @@
                 window.location.href = 'index.html'; // Redirect to login page if not logged in
             }
         });
-
-        function doLogin() {
-            document.login.password.value = md5(document.login.password.value);
-            return true;
-        }
 
         function connectToHotspot() {
             // Ambil nilai username dan password dari input form
@@ -98,13 +92,16 @@
             .then(data => {
                 // Tanggapan dari server MikroTik
                 console.log(data);
-                // Lakukan penanganan tanggapan sesuai kebutuhan Anda
+                if (data.status === 'success') {
+                    alert('Login successful');
+                } else {
+                    alert('Invalid credentials');
+                }
             })
             .catch(error => {
                 console.error('There was an error with the fetch operation:', error);
             });
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
 </body>
 </html>
