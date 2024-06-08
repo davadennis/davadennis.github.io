@@ -15,11 +15,11 @@
         <form name="login" onsubmit="connectToHotspot(); return false;">
             <label>
                 <img class="ico" src="img/user.svg" alt="#">
-                <input id="username" type="text" placeholder="Username">
+                <input id="username" type="text" placeholder="Username" required>
             </label>
             <label>
                 <img class="ico" src="img/password.svg" alt="#">
-                <input id="password" type="password" placeholder="Password">
+                <input id="password" type="password" placeholder="Password" required>
             </label>
             <input type="submit" value="Connect">
         </form>
@@ -31,7 +31,6 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAZ9Dbbsu3oDt4g14ceXYuETPZzyIwb910",
@@ -41,7 +40,6 @@
             messagingSenderId: "846385776645",
             appId: "1:846385776645:web:d325c150ed81d8264d746c",
             measurementId: "G-XBJ1S1F04B"
-
         };
 
         // Initialize Firebase
@@ -61,46 +59,42 @@
             }
         });
 
-        function connectToHotspot() {
+        async function connectToHotspot() {
             // Ambil nilai username dan password dari input form
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
             // Buat objek data untuk dikirim
-            var data = {
+            const data = {
                 username: username,
                 password: password
             };
 
-            // Konversi objek data menjadi format JSON
-            var jsonData = JSON.stringify(data);
-
             // Kirim permintaan HTTP POST ke endpoint MikroTik
-            fetch('http://192.168.77.1/authenticate.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: jsonData
-            })
-            .then(response => {
+            try {
+                const response = await fetch('http://192.168.77.1/authenticate.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
-            })
-            .then(data => {
+
+                const result = await response.json();
+
                 // Tanggapan dari server MikroTik
-                console.log(data);
-                if (data.status === 'success') {
+                if (result.status === 'success') {
                     alert('Login successful');
                 } else {
                     alert('Invalid credentials');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('There was an error with the fetch operation:', error);
-            });
+            }
         }
     </script>
 </body>
