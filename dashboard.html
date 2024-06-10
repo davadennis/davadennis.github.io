@@ -17,7 +17,6 @@
 
     <script type="module">
         // Import Firebase SDKs
-
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -44,11 +43,22 @@
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     document.getElementById('welcome-message').innerText = `Halo, ${userData.username}`;
+
+                    // Simpan data pengguna di localStorage
+                    localStorage.setItem('user', JSON.stringify(userData));
                 }
             } else {
                 window.location.href = 'index.html'; // Redirect to login page if not logged in
             }
         });
+
+        // Ambil data pengguna dari localStorage saat halaman dimuat
+        window.onload = () => {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (userData) {
+                document.getElementById('welcome-message').innerText = `Halo, ${userData.username}`;
+            }
+        };
     </script>
 </body>
 </html>
