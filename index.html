@@ -1,79 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h2>Dashboard</h2>
-    <p>Selamat datang di dashboard Anda!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bank Sampah Login</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    <style>
+      .container {
+        margin: 20px;
+      }
+      #dashboard {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="loginSection">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <button type="submit">Login</button>
+      </form>
+      <p id="loginError"></p>
+    </div>
 
-    <button onclick="window.location.href = '/voucher_login.html'">Tukarkan Voucher Mikrotik Disini</button>
-  </div>
+    <div class="container" id="registerSection">
+      <h2>Register</h2>
+      <form id="registerForm">
+        <label for="regEmail">Email:</label>
+        <input type="text" id="regEmail" name="email" required />
+        <label for="regPassword">Password:</label>
+        <input type="password" id="regPassword" name="password" required />
+        <button type="submit">Register</button>
+      </form>
+      <p id="registerError"></p>
+    </div>
 
-  <script type="module">
-    // Import Firebase SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <div class="container" id="dashboard">
+      <h2>Dashboard</h2>
+      <p>Welcome, <span id="userEmail"></span></p>
+      <p>Your Points: <span id="userPoints"></span></p>
+      <button id="logout">Logout</button>
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAZ9Dbbsu3oDt4g14ceXYuETPZzyIwb910",
-      authDomain: "bank-sampah-19cfe.firebaseapp.com",
-      projectId: "bank-sampah-19cfe",
-      storageBucket: "bank-sampah-19cfe.appspot.com",
-      messagingSenderId: "846385776645",
-      appId: "1:846385776645:web:d325c150ed81d8264d746c",
-      measurementId: "G-XBJ1S1F04B"
-    };
+    <script>
+      // Your web app's Firebase configuration
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyBTUUvgdp2dFhZ2OfIFTxPCE4i1H0dzLG0",
+        authDomain: "dade-nett.firebaseapp.com",
+        projectId: "dade-nett",
+        storageBucket: "dade-nett.appspot.com",
+        messagingSenderId: "555456431199",
+        appId: "1:555456431199:web:63f714c5d1febfd1c747ea",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+      // Register user
+      const registerForm = document.getElementById("registerForm");
+      registerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("regEmail").value;
+        const password = document.getElementById("regPassword").value;
 
-    async function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+        auth
+          .createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            return db.collection("users").doc(userCredential.user.uid).set({
+              email: email,
+              points: 0,
+            });
+          })
+          .then(() => {
+            alert("User registered successfully!");
+          })
+          .catch((error) => {
+            document.getElementById("registerError").innerText = error.message;
+          });
+      });
 
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        window.location.href = 'dashboard.html';
-      } catch (error) {
-        console.error("Error logging in:", error);
-        alert("Login failed: " + error.message);
-      }
-    }
+      // Login user
+      const loginForm = document.getElementById("loginForm");
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-    async function handleRegister(event) {
-      event.preventDefault();
-      const email = document.getElementById('email-reg').value;
-      const password = document.getElementById('password-reg').value;
-      const username = document.getElementById('username').value;
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            return db.collection("users").doc(userCredential.user.uid).get();
+          })
+          .then((doc) => {
+            if (doc.exists) {
+              document.getElementById("dashboard").style.display = "block";
+              document.getElementById("loginSection").style.display = "none";
+              document.getElementById("registerSection").style.display = "none";
+              document.getElementById("userEmail").innerText = doc.data().email;
+              document.getElementById("userPoints").innerText =
+                doc.data().points;
+            } else {
+              console.log("No such document!");
+            }
+          })
+          .catch((error) => {
+            document.getElementById("loginError").innerText = error.message;
+          });
+      });
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await setDoc(doc(db, "users", user.uid), {
-          username: username,
-          email: email,
-          points: 0
-        });
-        window.location.href = 'dashboard.html';
-      } catch (error) {
-        console.error("Error registering:", error);
-        alert("Registration failed: " + error.message);
-      }
-    }
-
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('register-form').addEventListener('submit', handleRegister);
-  </script>
-</body>
+      // Logout user
+      const logoutButton = document.getElementById("logout");
+      logoutButton.addEventListener("click", () => {
+        auth.signOut().then(() => {
+          document.getElementById("dashboard").style.display = "none";
+          document.getElementById("loginSection").style.display = "block";
+          document.getElementById("registerSection").style.display = "block";
+          document.getElementById("userEmail").innerText = "";
+          document.getElementById("userPoints").innerText = "";
+        });
+      });
+    </script>
+  </body>
 </html>
